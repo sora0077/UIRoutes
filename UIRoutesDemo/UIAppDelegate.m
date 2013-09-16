@@ -8,6 +8,13 @@
 
 #import "UIAppDelegate.h"
 
+#import "UIRoutes.h"
+#import "UIModalSegue.h"
+#import "UIPushSegue.h"
+#import "UIPushElseModalSegue.h"
+
+#import "DemoViewController.h"
+
 @implementation UIAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -16,7 +23,80 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+
+    UIViewController *viewController = [DemoViewController new];
+    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:viewController];
+
+    [UIRoutes routingOnWindow:self.window];
+
+    {
+
+    UIStory *story = [UIStory storyWithPattern:@"push/user/:id" segue:[UIPushElseModalSegue class] unwind:[UIPushElseModalUnwindSegue class]];
+
+    [[UIRoutes defaultScheme] addStory:story handler:^UIViewController *(NSURL *url, NSDictionary *params) {
+        NSLog(@"%@ %@", url, params);
+        UIViewController *viewController = [DemoViewController new];
+        viewController.view.backgroundColor = [UIColor greenColor];
+        return viewController;
+    }];
+    }
+    {
+
+    UIStory *story = [UIStory storyWithPattern:@"push/profile/:id" segue:[UIModalSegue class] unwind:[UIModalUnwindSegue class]];
+
+    [[UIRoutes defaultScheme] addStory:story handler:^UIViewController *(NSURL *url, NSDictionary *params) {
+        NSLog(@"%@ %@", url, params);
+        UIViewController *viewController = [DemoViewController new];
+        viewController.view.backgroundColor = [UIColor blueColor];
+        return viewController;
+    }];
+    }
+
+    UIStory *unresolved = [UIStory unresolvedStoryWithSegue:[UIModalSegue class] unwind:[UIModalUnwindSegue class]];
+    [[UIRoutes defaultScheme] unresolved:unresolved handler:^UIViewController *(NSURL *url) {
+        NSLog(@"%@", url);
+        UIViewController *viewController = [DemoViewController new];
+        viewController.view.backgroundColor = [UIColor redColor];
+        return viewController;
+    }];
+
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        [UIRoutes openURL:[NSURL URLWithString:@"myapp://push/user/16"]];
+
+        
+        double delayInSeconds = 1.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [UIRoutes openURL:[NSURL URLWithString:@"myapp://push/profile/16"]];
+            double delayInSeconds = 2.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [UIRoutes pop];
+                double delayInSeconds = 2.0;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [UIRoutes pop];
+                    double delayInSeconds = 2.0;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                        [UIRoutes openURL:[NSURL URLWithString:@"myapp://teszt"]];
+                    });
+                });
+            });
+        });
+    });
     return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    if ([UIRoutes canOpenURL:url]) {
+        [UIRoutes openURL:url];
+        return YES;
+    }
+    return NO;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

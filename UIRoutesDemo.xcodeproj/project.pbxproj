@@ -21,6 +21,16 @@
 		4AF21B4917E3491C00226DFF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AF21B2A17E3491C00226DFF /* Foundation.framework */; };
 		4AF21B5117E3491C00226DFF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4AF21B4F17E3491C00226DFF /* InfoPlist.strings */; };
 		4AF21B5417E3491C00226DFF /* UIRoutesDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF21B5317E3491C00226DFF /* UIRoutesDemoTests.m */; };
+		4AF21B6017E3495000226DFF /* UIRoutes.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF21B5F17E3495000226DFF /* UIRoutes.m */; };
+		4AF21B6117E3495000226DFF /* UIRoutes.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF21B5F17E3495000226DFF /* UIRoutes.m */; };
+		4AF21B6917E4C3FD00226DFF /* UIModalSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF21B6817E4C3FD00226DFF /* UIModalSegue.m */; };
+		4AF21B6A17E4C3FD00226DFF /* UIModalSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF21B6817E4C3FD00226DFF /* UIModalSegue.m */; };
+		4AF21B7117E605DF00226DFF /* UIPushSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF21B7017E605DF00226DFF /* UIPushSegue.m */; };
+		4AF21B7217E605DF00226DFF /* UIPushSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF21B7017E605DF00226DFF /* UIPushSegue.m */; };
+		4AF21B7917E6B11200226DFF /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF21B7817E6B11200226DFF /* DemoViewController.m */; };
+		4AF21B7A17E6B11200226DFF /* DemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF21B7817E6B11200226DFF /* DemoViewController.m */; };
+		4AF21B7F17E70B8800226DFF /* UIPushElseModalSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF21B7E17E70B8800226DFF /* UIPushElseModalSegue.m */; };
+		4AF21B8017E70B8800226DFF /* UIPushElseModalSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AF21B7E17E70B8800226DFF /* UIPushElseModalSegue.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +44,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		112CA196ABFF44988357E447 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AF21B2517E3491C00226DFF /* UIRoutesDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UIRoutesDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AF21B2817E3491C00226DFF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4AF21B2A17E3491C00226DFF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -53,6 +64,16 @@
 		4AF21B5017E3491C00226DFF /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		4AF21B5217E3491C00226DFF /* UIRoutesDemoTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIRoutesDemoTests.h; sourceTree = "<group>"; };
 		4AF21B5317E3491C00226DFF /* UIRoutesDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIRoutesDemoTests.m; sourceTree = "<group>"; };
+		4AF21B5E17E3495000226DFF /* UIRoutes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIRoutes.h; sourceTree = "<group>"; };
+		4AF21B5F17E3495000226DFF /* UIRoutes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIRoutes.m; sourceTree = "<group>"; };
+		4AF21B6717E4C3FD00226DFF /* UIModalSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIModalSegue.h; sourceTree = "<group>"; };
+		4AF21B6817E4C3FD00226DFF /* UIModalSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIModalSegue.m; sourceTree = "<group>"; };
+		4AF21B6F17E605DF00226DFF /* UIPushSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIPushSegue.h; sourceTree = "<group>"; };
+		4AF21B7017E605DF00226DFF /* UIPushSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPushSegue.m; sourceTree = "<group>"; };
+		4AF21B7717E6B11200226DFF /* DemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoViewController.h; sourceTree = "<group>"; };
+		4AF21B7817E6B11200226DFF /* DemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoViewController.m; sourceTree = "<group>"; };
+		4AF21B7D17E70B8800226DFF /* UIPushElseModalSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIPushElseModalSegue.h; sourceTree = "<group>"; };
+		4AF21B7E17E70B8800226DFF /* UIPushElseModalSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIPushElseModalSegue.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +103,7 @@
 		4AF21B1C17E3491C00226DFF = {
 			isa = PBXGroup;
 			children = (
+				4AF21B5D17E3492E00226DFF /* UIRoutes */,
 				4AF21B2E17E3491C00226DFF /* UIRoutesDemo */,
 				4AF21B4C17E3491C00226DFF /* UIRoutesDemoTests */,
 				4AF21B2717E3491C00226DFF /* Frameworks */,
@@ -105,6 +127,7 @@
 				4AF21B2A17E3491C00226DFF /* Foundation.framework */,
 				4AF21B2C17E3491C00226DFF /* CoreGraphics.framework */,
 				4AF21B4617E3491C00226DFF /* SenTestingKit.framework */,
+				112CA196ABFF44988357E447 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -115,6 +138,8 @@
 				4AF21B3717E3491C00226DFF /* UIAppDelegate.h */,
 				4AF21B3817E3491C00226DFF /* UIAppDelegate.m */,
 				4AF21B2F17E3491C00226DFF /* Supporting Files */,
+				4AF21B7717E6B11200226DFF /* DemoViewController.h */,
+				4AF21B7817E6B11200226DFF /* DemoViewController.m */,
 			);
 			path = UIRoutesDemo;
 			sourceTree = "<group>";
@@ -150,6 +175,29 @@
 				4AF21B4F17E3491C00226DFF /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4AF21B5D17E3492E00226DFF /* UIRoutes */ = {
+			isa = PBXGroup;
+			children = (
+				4AF21B6617E4C3AD00226DFF /* Segue */,
+				4AF21B5E17E3495000226DFF /* UIRoutes.h */,
+				4AF21B5F17E3495000226DFF /* UIRoutes.m */,
+			);
+			path = UIRoutes;
+			sourceTree = "<group>";
+		};
+		4AF21B6617E4C3AD00226DFF /* Segue */ = {
+			isa = PBXGroup;
+			children = (
+				4AF21B6717E4C3FD00226DFF /* UIModalSegue.h */,
+				4AF21B6817E4C3FD00226DFF /* UIModalSegue.m */,
+				4AF21B6F17E605DF00226DFF /* UIPushSegue.h */,
+				4AF21B7017E605DF00226DFF /* UIPushSegue.m */,
+				4AF21B7D17E70B8800226DFF /* UIPushElseModalSegue.h */,
+				4AF21B7E17E70B8800226DFF /* UIPushElseModalSegue.m */,
+			);
+			path = Segue;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -264,6 +312,11 @@
 			files = (
 				4AF21B3517E3491C00226DFF /* main.m in Sources */,
 				4AF21B3917E3491C00226DFF /* UIAppDelegate.m in Sources */,
+				4AF21B6017E3495000226DFF /* UIRoutes.m in Sources */,
+				4AF21B6917E4C3FD00226DFF /* UIModalSegue.m in Sources */,
+				4AF21B7117E605DF00226DFF /* UIPushSegue.m in Sources */,
+				4AF21B7917E6B11200226DFF /* DemoViewController.m in Sources */,
+				4AF21B7F17E70B8800226DFF /* UIPushElseModalSegue.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +325,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				4AF21B5417E3491C00226DFF /* UIRoutesDemoTests.m in Sources */,
+				4AF21B6117E3495000226DFF /* UIRoutes.m in Sources */,
+				4AF21B6A17E4C3FD00226DFF /* UIModalSegue.m in Sources */,
+				4AF21B7217E605DF00226DFF /* UIPushSegue.m in Sources */,
+				4AF21B7A17E6B11200226DFF /* DemoViewController.m in Sources */,
+				4AF21B8017E70B8800226DFF /* UIPushElseModalSegue.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,6 +494,7 @@
 				4AF21B5917E3491C00226DFF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4AF21B5A17E3491C00226DFF /* Build configuration list for PBXNativeTarget "UIRoutesDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -444,6 +503,7 @@
 				4AF21B5C17E3491C00226DFF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
