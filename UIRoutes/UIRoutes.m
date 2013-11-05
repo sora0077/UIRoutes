@@ -125,7 +125,8 @@ static UIWindow *_routingWindow;
         [[self stacks] removeLastObject];
         UIViewController *source = story.presentedViewController;
         UIViewController *destination = story.presentingViewController;
-        if (source && destination) {
+        BOOL isVisible = source.isViewLoaded && source.view.window;
+        if (source && destination && isVisible) {
             UIStoryboardSegue *unwind = [story prepareUnwind:source to:destination];
             if (wake) {
                 wake(unwind);
@@ -138,12 +139,44 @@ static UIWindow *_routingWindow;
     }
 }
 
++ (void)clear
+{
+    [self clearAniamted:NO];
+}
+
++ (void)clearAniamted:(BOOL)animated
+{
+    [self clearAniamted:animated dismiss:nil];
+}
+
++ (void)clearAniamted:(BOOL)animated dismiss:(void (^)(UIViewController *))dismiss
+{
+//    UIStory *story = [self stacks].lastObject;
+//    UIViewController *currentViewController = story.presentedViewController;
+    [[self stacks] removeAllObjects];
+    UIViewController *topViewController = [self stackedController];
+    if (topViewController.presentedViewController) {
+        if (dismiss) {
+            dismiss(topViewController);
+        } else {
+            [topViewController dismissViewControllerAnimated:animated completion:nil];
+        }
+        animated = NO;
+    }
+    if ([topViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *navController = (id)topViewController;
+        [navController popToRootViewControllerAnimated:animated];
+    }
+}
+
 + (UIViewController *)stackedController
 {
     if ([self stacks].count) {
         UIStory *story = [self stacks].lastObject;
-        if (story.presentedViewController) {
-            return story.presentedViewController;
+        UIViewController *viewController = story.presentedViewController;
+        BOOL isVisible = viewController.isViewLoaded && viewController.view.window;
+        if (viewController && isVisible) {
+            return viewController;
         }
         [[self stacks] removeLastObject];
         return [self stackedController];
@@ -245,7 +278,8 @@ static UIWindow *_routingWindow;
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    return [[[self class] allocWithZone:zone] initWithPattern:_pattern segue:_segue unwind:_unwind];
+    id copy = [[[self class] allocWithZone:zone] initWithPattern:_pattern segue:_segue unwind:_unwind];
+    return copy;
 }
 
 - (UIStoryboardSegue *)prepareSegue:(UIViewController *)destination from:(UIViewController *)source
