@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-
+@protocol UIRoutesSegueProtocol;
 @class UIStory;
 @interface UIRoutes : NSObject
 + (void)routingOnWindow:(UIWindow *)window;
@@ -17,10 +17,15 @@
 
 + (BOOL)canOpenURL:(NSURL *)url;
 + (void)openURL:(NSURL *)url;
-+ (void)openURL:(NSURL *)url wake:(void (^)(UIStoryboardSegue *segue))wake;
++ (void)openURL:(NSURL *)url wake:(void (^)(UIStoryboardSegue<UIRoutesSegueProtocol> *segue))wake;
++ (void)openURL:(NSURL *)url wake:(void (^)(UIStoryboardSegue<UIRoutesSegueProtocol> *segue))wake completion:(void (^)())completion;
++ (void)openURL:(NSURL *)url completion:(void (^)())completion;
+
 
 + (void)pop;
-+ (void)popOnWake:(void (^)(UIStoryboardSegue *segue))wake;
++ (void)popOnWake:(void (^)(UIStoryboardSegue<UIRoutesSegueProtocol> *segue))wake;
++ (void)popOnWake:(void (^)(UIStoryboardSegue<UIRoutesSegueProtocol> *segue))wake completion:(void (^)())completion;
++ (void)popOnCompletion:(void (^)())completion;
 
 + (void)clear;
 + (void)clearAniamted:(BOOL)animated;

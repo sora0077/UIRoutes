@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4AB92B311829FBBD0076B573 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AB92B301829FBBD0076B573 /* QuartzCore.framework */; };
 		4AF21B2917E3491C00226DFF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AF21B2817E3491C00226DFF /* UIKit.framework */; };
 		4AF21B2B17E3491C00226DFF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AF21B2A17E3491C00226DFF /* Foundation.framework */; };
 		4AF21B2D17E3491C00226DFF /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AF21B2C17E3491C00226DFF /* CoreGraphics.framework */; };
@@ -45,6 +46,9 @@
 
 /* Begin PBXFileReference section */
 		112CA196ABFF44988357E447 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4AB92B2F1829EF1F0076B573 /* UIRoutesSegueProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIRoutesSegueProtocol.h; sourceTree = "<group>"; };
+		4AB92B301829FBBD0076B573 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		4AB92B32182A07E70076B573 /* UIRoutes.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = UIRoutes.podspec; sourceTree = "<group>"; };
 		4AF21B2517E3491C00226DFF /* UIRoutesDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UIRoutesDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4AF21B2817E3491C00226DFF /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4AF21B2A17E3491C00226DFF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -81,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4AB92B311829FBBD0076B573 /* QuartzCore.framework in Frameworks */,
 				4AF21B2917E3491C00226DFF /* UIKit.framework in Frameworks */,
 				4AF21B2B17E3491C00226DFF /* Foundation.framework in Frameworks */,
 				4AF21B2D17E3491C00226DFF /* CoreGraphics.framework in Frameworks */,
@@ -103,6 +108,7 @@
 		4AF21B1C17E3491C00226DFF = {
 			isa = PBXGroup;
 			children = (
+				4AB92B32182A07E70076B573 /* UIRoutes.podspec */,
 				4AF21B5D17E3492E00226DFF /* UIRoutes */,
 				4AF21B2E17E3491C00226DFF /* UIRoutesDemo */,
 				4AF21B4C17E3491C00226DFF /* UIRoutesDemoTests */,
@@ -123,6 +129,7 @@
 		4AF21B2717E3491C00226DFF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4AB92B301829FBBD0076B573 /* QuartzCore.framework */,
 				4AF21B2817E3491C00226DFF /* UIKit.framework */,
 				4AF21B2A17E3491C00226DFF /* Foundation.framework */,
 				4AF21B2C17E3491C00226DFF /* CoreGraphics.framework */,
@@ -183,6 +190,7 @@
 				4AF21B6617E4C3AD00226DFF /* Segue */,
 				4AF21B5E17E3495000226DFF /* UIRoutes.h */,
 				4AF21B5F17E3495000226DFF /* UIRoutes.m */,
+				4AB92B2F1829EF1F0076B573 /* UIRoutesSegueProtocol.h */,
 			);
 			path = UIRoutes;
 			sourceTree = "<group>";

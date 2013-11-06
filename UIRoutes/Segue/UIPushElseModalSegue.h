@@ -6,10 +6,9 @@
 //  Copyright (c) 2013年 林 達也. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "UIPushSegue.h"
 
-@interface UIPushElseModalSegue : UIStoryboardSegue
-@property (nonatomic, assign) BOOL animated;
+@interface UIPushElseModalSegue : UIPushSegue
 @end
 
 @interface UIPushElseModalUnwindSegue : UIPushElseModalSegue

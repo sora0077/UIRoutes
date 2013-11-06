@@ -7,6 +7,7 @@
 //
 
 #import "UIRoutes.h"
+#import "UIRoutesSegueProtocol.h"
 
 @interface UIStory () <NSCopying>
 @property (nonatomic, copy) UIViewController *(^handler)(NSURL *url, NSDictionary *params);
@@ -14,8 +15,10 @@
 @property (nonatomic, weak) UIViewController *presentedViewController;
 @property (nonatomic, weak) UIViewController *presentingViewController;
 
-- (UIStoryboardSegue *)prepareSegue:(UIViewController *)destination from:(UIViewController *)source;
-- (UIStoryboardSegue *)prepareUnwind:(UIViewController *)source to:(UIViewController *)destination;
+@property (nonatomic, readonly) NSString *pattern;
+
+- (UIStoryboardSegue<UIRoutesSegueProtocol> *)prepareSegue:(UIViewController *)destination from:(UIViewController *)source;
+- (UIStoryboardSegue<UIRoutesSegueProtocol> *)prepareUnwind:(UIViewController *)source to:(UIViewController *)destination;
 
 - (NSDictionary *)parameterForURL:(NSURL *)url;
 @end
@@ -107,10 +110,20 @@ static UIWindow *_routingWindow;
     [self openURL:url wake:nil];
 }
 
-+ (void)openURL:(NSURL *)url wake:(void (^)(UIStoryboardSegue *))wake
++ (void)openURL:(NSURL *)url wake:(void (^)(UIStoryboardSegue<UIRoutesSegueProtocol> *))wake
+{
+    [self openURL:url wake:wake completion:nil];
+}
+
++ (void)openURL:(NSURL *)url completion:(void (^)())completion
+{
+    [self openURL:url wake:nil completion:completion];
+}
+
++ (void)openURL:(NSURL *)url wake:(void (^)(UIStoryboardSegue<UIRoutesSegueProtocol> *))wake completion:(void (^)())completion
 {
     UIRoutes *route = [[self class] routes][url.scheme];
-    [route openURL:url wake:wake];
+    [route openURL:url wake:wake completion:completion];
 }
 
 + (void)pop
@@ -118,7 +131,17 @@ static UIWindow *_routingWindow;
     [self popOnWake:nil];
 }
 
-+ (void)popOnWake:(void (^)(UIStoryboardSegue *))wake
++ (void)popOnWake:(void (^)(UIStoryboardSegue<UIRoutesSegueProtocol> *))wake
+{
+    [self popOnWake:wake completion:nil];
+}
+
++ (void)popOnCompletion:(void (^)())completion
+{
+    [self popOnWake:nil completion:completion];
+}
+
++ (void)popOnWake:(void (^)(UIStoryboardSegue<UIRoutesSegueProtocol> *))wake completion:(void (^)())completion
 {
     if ([self stacks].count) {
         UIStory *story = [self stacks].lastObject;
@@ -127,14 +150,14 @@ static UIWindow *_routingWindow;
         UIViewController *destination = story.presentingViewController;
         BOOL isVisible = source.isViewLoaded && source.view.window;
         if (source && destination && isVisible) {
-            UIStoryboardSegue *unwind = [story prepareUnwind:source to:destination];
+            UIStoryboardSegue<UIRoutesSegueProtocol> *unwind = [story prepareUnwind:source to:destination];
             if (wake) {
                 wake(unwind);
             }
 
-            [unwind perform];
+            [unwind performWithCompletion:completion];
         } else {
-            [self popOnWake:wake];
+            [self popOnWake:wake completion:completion];
         }
     }
 }
@@ -197,9 +220,6 @@ static UIWindow *_routingWindow;
             return YES;
         }
     }
-    if (_unresolvedStory) {
-        return YES;
-    }
     return NO;
 }
 
@@ -210,31 +230,37 @@ static UIWindow *_routingWindow;
 
 - (void)openURL:(NSURL *)url wake:(void (^)(UIStoryboardSegue *))wake
 {
+    [self openURL:url wake:wake completion:nil];
+}
+
+- (void)openURL:(NSURL *)url wake:(void (^)(UIStoryboardSegue *))wake completion:(void (^)())completion
+{
     for (UIStory *story in _stories) {
         NSDictionary *params = [story parameterForURL:url];
         if (params) {
-            [self performSegueWithStory:story url:url parameter:params wake:wake];
+            [self performSegueWithStory:story url:url parameter:params wake:wake completion:completion];
             return;
         }
     }
     if (_unresolvedStory) {
-        [self performSegueWithStory:_unresolvedStory url:url parameter:nil wake:wake];
+        [self performSegueWithStory:_unresolvedStory url:url parameter:nil wake:wake completion:completion];
     }
 }
 
-- (BOOL)performSegueWithStory:(UIStory *)story url:(NSURL *)url parameter:(NSDictionary *)params wake:(void (^)(UIStoryboardSegue *))wake
+
+- (BOOL)performSegueWithStory:(UIStory *)story url:(NSURL *)url parameter:(NSDictionary *)params wake:(void (^)(UIStoryboardSegue *))wake completion:(void (^)())completion
 {
     UIViewController *destination = story.handler(url, params);
     if (destination) {
         UIViewController *source = [[self class] stackedController];
-        UIStoryboardSegue *segue = [story prepareSegue:destination from:source];
+        UIStoryboardSegue<UIRoutesSegueProtocol> *segue = [story prepareSegue:destination from:source];
         if (wake) {
             wake(segue);
         }
         UIStory *stack = [story copy];
         stack.presentedViewController = destination;
         stack.presentingViewController = source;
-        [segue perform];
+        [segue performWithCompletion:completion];
         [[[self class] stacks] addObject:stack];
         return YES;
     }
@@ -242,7 +268,6 @@ static UIWindow *_routingWindow;
 }
 
 @end
-
 
 
 @implementation UIStory
@@ -268,6 +293,8 @@ static UIWindow *_routingWindow;
 {
     self = [super init];
     if (self) {
+        NSAssert([segue conformsToProtocol:@protocol(UIRoutesSegueProtocol)], @"");
+        NSAssert([unwind conformsToProtocol:@protocol(UIRoutesSegueProtocol)], @"");
         _pattern = pattern;
         _segue = segue;
         _unwind = unwind;
@@ -282,15 +309,15 @@ static UIWindow *_routingWindow;
     return copy;
 }
 
-- (UIStoryboardSegue *)prepareSegue:(UIViewController *)destination from:(UIViewController *)source
+- (UIStoryboardSegue<UIRoutesSegueProtocol> *)prepareSegue:(UIViewController *)destination from:(UIViewController *)source
 {
-    UIStoryboardSegue *segue = [[_segue alloc] initWithIdentifier:_pattern source:source destination:destination];
+    UIStoryboardSegue<UIRoutesSegueProtocol> *segue = [[_segue alloc] initWithIdentifier:_pattern source:source destination:destination];
     return segue;
 }
 
-- (UIStoryboardSegue *)prepareUnwind:(UIViewController *)source to:(UIViewController *)destination
+- (UIStoryboardSegue<UIRoutesSegueProtocol> *)prepareUnwind:(UIViewController *)source to:(UIViewController *)destination
 {
-    UIStoryboardSegue *unwind = [[_unwind alloc] initWithIdentifier:_pattern source:source destination:destination];
+    UIStoryboardSegue<UIRoutesSegueProtocol> *unwind = [[_unwind alloc] initWithIdentifier:_pattern source:source destination:destination];
     return unwind;
 }
 

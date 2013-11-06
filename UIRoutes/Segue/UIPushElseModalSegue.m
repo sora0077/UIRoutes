@@ -21,11 +21,16 @@
 
 - (void)perform
 {
+    [self performWithCompletion:nil];
+}
+
+- (void)performWithCompletion:(void (^)())completion
+{
     UINavigationController *navController = [self.sourceViewController navigationController] ?: self.sourceViewController;
     if ([navController respondsToSelector:@selector(pushViewController:animated:)]) {
-        [navController pushViewController:self.destinationViewController animated:self.animated];
+        [super performWithCompletion:completion];
     } else {
-        [navController presentViewController:self.destinationViewController animated:self.animated completion:nil];
+        [navController presentViewController:self.destinationViewController animated:self.animated completion:completion];
     }
 }
 
@@ -35,11 +40,16 @@
 
 - (void)perform
 {
+    [self performWithCompletion:nil];
+}
+
+- (void)performWithCompletion:(void (^)())completion
+{
     UINavigationController *navController = [self.sourceViewController navigationController] ?: self.sourceViewController;
     if ([navController respondsToSelector:@selector(popViewControllerAnimated:)]) {
-        [navController popViewControllerAnimated:self.animated];
+        [super performWithCompletion:completion];
     } else {
-        [self.sourceViewController dismissViewControllerAnimated:self.animated completion:nil];
+        [self.sourceViewController dismissViewControllerAnimated:self.animated completion:completion];
     }
 }
 

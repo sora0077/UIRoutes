@@ -63,34 +63,23 @@
     double delayInSeconds = 2.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [UIRoutes openURL:[NSURL URLWithString:@"myapp://push/user/16"]];
-
-        
-        double delayInSeconds = 1.0;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [UIRoutes openURL:[NSURL URLWithString:@"myapp://push/profile/16"]];
-            double delayInSeconds = 1.0;
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                [UIRoutes pop];
-                double delayInSeconds = 1.0;
-                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-//                    [UIRoutes pop];
-                    double delayInSeconds = 1.0;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        [UIRoutes openURL:[NSURL URLWithString:@"myapp://teszt"]];
-                        double delayInSeconds = 1.0;
-                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                            [UIRoutes clearAniamted:YES];
-                        });
-                    });
-                });
-            });
-        });
+        NSLog(@"begin myapp://push/user/16");
+        [UIRoutes openURL:[NSURL URLWithString:@"myapp://push/user/16"] completion:^{
+            NSLog(@"completion myapp://push/user/16");
+            NSLog(@"begin myapp://push/profile/16");
+            [UIRoutes openURL:[NSURL URLWithString:@"myapp://push/profile/16"] completion:^{
+                NSLog(@"completion myapp://push/profile/16");
+                NSLog(@"pop myapp://push/profile/16");
+                [UIRoutes popOnCompletion:^{
+                    NSLog(@"completion myapp://push/profile/16");
+                    NSLog(@"begin myapp://test");
+                    [UIRoutes openURL:[NSURL URLWithString:@"myapp://test"] completion:^{
+                        NSLog(@"completion myapp://test");
+//                        [UIRoutes clearAniamted:YES];
+                    }];
+                }];
+            }];
+        }];
     });
     return YES;
 }

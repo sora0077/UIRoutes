@@ -21,8 +21,12 @@
 
 - (void)perform
 {
-//    UIViewController *viewController = self.sourceViewController presentedViewController
-    [self.sourceViewController presentViewController:self.destinationViewController animated:self.animated completion:nil];
+    [self performWithCompletion:nil];
+}
+
+- (void)performWithCompletion:(void (^)())completion
+{
+    [self.sourceViewController presentViewController:self.destinationViewController animated:self.animated completion:completion];
 }
 
 @end
@@ -31,7 +35,12 @@
 
 - (void)perform
 {
-    [self.sourceViewController dismissViewControllerAnimated:self.animated completion:nil];
+    [self performWithCompletion:nil];
+}
+
+- (void)performWithCompletion:(void (^)())completion
+{
+    [self.sourceViewController dismissViewControllerAnimated:self.animated completion:completion];
 }
 
 @end

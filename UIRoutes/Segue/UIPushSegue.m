@@ -21,8 +21,21 @@
 
 - (void)perform
 {
+    [self performWithCompletion:nil];
+}
+
+- (void)performWithCompletion:(void (^)())completion
+{
     UINavigationController *navController = [self.sourceViewController navigationController] ?: self.sourceViewController;
     [navController pushViewController:self.destinationViewController animated:self.animated];
+
+    if (completion) {
+        double delayInSeconds = 0.5;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            completion();
+        });
+    }
 }
 
 @end
@@ -31,7 +44,20 @@
 
 - (void)perform
 {
+    [self performWithCompletion:nil];
+}
+
+- (void)performWithCompletion:(void (^)())completion
+{
     [[self.sourceViewController navigationController] popViewControllerAnimated:self.animated];
+
+    if (completion) {
+        double delayInSeconds = 0.5;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            completion();
+        });
+    }
 }
 
 @end

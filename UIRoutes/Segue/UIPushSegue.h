@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UIRoutesSegueProtocol.h"
 
-@interface UIPushSegue : UIStoryboardSegue
+@interface UIPushSegue : UIStoryboardSegue<UIRoutesSegueProtocol>
 @property (nonatomic, assign) BOOL animated;
 @end
 
