@@ -12,6 +12,7 @@
 @interface UIStory () <NSCopying>
 @property (nonatomic, copy) UIViewController *(^handler)(NSURL *url, NSDictionary *params);
 
+@property (nonatomic, strong) NSURL *url;
 @property (nonatomic, weak) UIViewController *presentedViewController;
 @property (nonatomic, weak) UIViewController *presentingViewController;
 
@@ -99,6 +100,27 @@ static UIWindow *_routingWindow;
     _unresolvedStory = story;
 }
 
++ (NSURL *)topURL
+{
+    UIStory *story = [self topStory];
+    return story.url;
+}
+
++ (BOOL)hasStacked:(NSURL *)url
+{
+    [self topStory];
+    NSArray *urls = [[self stacks] valueForKeyPath:@"url"];
+
+    for (NSURL *stackedURL in [urls reverseObjectEnumerator]) {
+        if ([url.scheme isEqualToString:stackedURL.scheme]
+            && [url.host isEqualToString:stackedURL.host]
+            && [url.path isEqualToString:stackedURL.path]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 + (BOOL)canOpenURL:(NSURL *)url
 {
     UIRoutes *route = [[self class] routes][url.scheme];
@@ -143,22 +165,18 @@ static UIWindow *_routingWindow;
 
 + (void)popOnWake:(void (^)(UIStoryboardSegue<UIRoutesSegueProtocol> *))wake completion:(void (^)())completion
 {
-    if ([self stacks].count) {
-        UIStory *story = [self stacks].lastObject;
-        [[self stacks] removeLastObject];
+    UIStory *story = [self topStory];
+    if (story) {
         UIViewController *source = story.presentedViewController;
         UIViewController *destination = story.presentingViewController;
-        BOOL isVisible = source.isViewLoaded && source.view.window;
-        if (source && destination && isVisible) {
-            UIStoryboardSegue<UIRoutesSegueProtocol> *unwind = [story prepareUnwind:source to:destination];
-            if (wake) {
-                wake(unwind);
-            }
-
-            [unwind performWithCompletion:completion];
-        } else {
-            [self popOnWake:wake completion:completion];
+        UIStoryboardSegue<UIRoutesSegueProtocol> *unwind = [story prepareUnwind:source to:destination];
+        if (wake) {
+            wake(unwind);
         }
+
+        [unwind performWithCompletion:completion];
+
+        [[self stacks] removeObject:story];
     }
 }
 
@@ -194,15 +212,9 @@ static UIWindow *_routingWindow;
 
 + (UIViewController *)stackedController
 {
-    if ([self stacks].count) {
-        UIStory *story = [self stacks].lastObject;
-        UIViewController *viewController = story.presentedViewController;
-        BOOL isVisible = viewController.isViewLoaded && viewController.view.window;
-        if (viewController && isVisible) {
-            return viewController;
-        }
-        [[self stacks] removeLastObject];
-        return [self stackedController];
+    UIStory *story = [self topStory];
+    if (story) {
+        return story.presentedViewController;
     }
     return _routingWindow.rootViewController;
 }
@@ -210,6 +222,23 @@ static UIWindow *_routingWindow;
 + (void)routingOnWindow:(UIWindow *)window
 {
     _routingWindow = window;
+}
+
++ (UIStory *)topStory
+{
+    if ([self stacks].count) {
+        UIStory *story = [self stacks].lastObject;
+        UIViewController *source = story.presentedViewController;
+        UIViewController *destination = story.presentingViewController;
+        BOOL isVisible = source.isViewLoaded && source.view.window;
+        if (source && destination && isVisible) {
+            return story;
+        } else {
+            [[self stacks] removeObject:story];
+            return [self topStory];
+        }
+    }
+    return nil;
 }
 
 - (BOOL)canOpenURL:(NSURL *)url
@@ -258,6 +287,7 @@ static UIWindow *_routingWindow;
             wake(segue);
         }
         UIStory *stack = [story copy];
+        stack.url = url;
         stack.presentedViewController = destination;
         stack.presentingViewController = source;
         [segue performWithCompletion:completion];
@@ -339,5 +369,19 @@ static UIWindow *_routingWindow;
     return parameter;
 }
 
+
+@end
+
+#pragma mark -
+
+@implementation UIApi
+
++ (instancetype)apiWithPattern:(NSString *)pattern
+{
+    UIApi *api = [super storyWithPattern:pattern
+                                   segue:nil
+                                  unwind:nil];
+    return api;
+}
 
 @end

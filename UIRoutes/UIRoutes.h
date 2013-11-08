@@ -15,6 +15,9 @@
 + (instancetype)defaultScheme;
 + (instancetype)forScheme:(NSString *)scheme;
 
++ (NSURL *)topURL;
++ (BOOL)hasStacked:(NSURL *)url;
+
 + (BOOL)canOpenURL:(NSURL *)url;
 + (void)openURL:(NSURL *)url;
 + (void)openURL:(NSURL *)url wake:(void (^)(UIStoryboardSegue<UIRoutesSegueProtocol> *segue))wake;
@@ -35,9 +38,15 @@
 - (void)unresolved:(UIStory *)story handler:(UIViewController *(^)(NSURL *url))handler;
 @end
 
+#pragma mark -
 @interface UIStory : NSObject
 + (instancetype)storyWithPattern:(NSString *)pattern segue:(Class)segueClass unwind:(Class)unwindClass;
 
 + (instancetype)unresolvedStoryWithSegue:(Class)segueClass unwind:(Class)unwindClass;
 
+@end
+
+#pragma mark -
+@interface UIApi : UIStory
++ (instancetype)apiWithPattern:(NSString *)pattern;
 @end
