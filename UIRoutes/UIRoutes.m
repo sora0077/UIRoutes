@@ -293,8 +293,8 @@ static UIWindow *_routingWindow;
 {
     self = [super init];
     if (self) {
-        NSAssert([segue conformsToProtocol:@protocol(UIRoutesSegueProtocol)], @"");
-        NSAssert([unwind conformsToProtocol:@protocol(UIRoutesSegueProtocol)], @"");
+        NSAssert(segue == nil || [segue conformsToProtocol:@protocol(UIRoutesSegueProtocol)], @"");
+        NSAssert(unwind == nil || [unwind conformsToProtocol:@protocol(UIRoutesSegueProtocol)], @"");
         _pattern = pattern;
         _segue = segue;
         _unwind = unwind;

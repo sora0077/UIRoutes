@@ -11,5 +11,5 @@
 @interface UIPushElseModalSegue : UIPushSegue
 @end
 
-@interface UIPushElseModalUnwindSegue : UIPushElseModalSegue
+@interface UIPushElseModalUnwindSegue : UIPushUnwindSegue
 @end
