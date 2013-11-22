@@ -51,6 +51,17 @@
         return viewController;
     }];
     }
+    {
+
+    UIStory *story = [UIStory storyWithPattern:@"push/:profile/:id" segue:[UIModalSegue class] unwind:[UIModalUnwindSegue class]];
+
+    [[UIRoutes defaultScheme] addStory:story handler:^UIViewController *(NSURL *url, NSDictionary *params) {
+        NSLog(@"%@ %@", url, params);
+        UIViewController *viewController = [DemoViewController new];
+        viewController.view.backgroundColor = [UIColor yellowColor];
+        return viewController;
+    }];
+    }
 
     UIStory *unresolved = [UIStory unresolvedStoryWithSegue:[UIModalSegue class] unwind:[UIModalUnwindSegue class]];
     [[UIRoutes defaultScheme] unresolved:unresolved handler:^UIViewController *(NSURL *url) {

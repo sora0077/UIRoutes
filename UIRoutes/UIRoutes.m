@@ -9,6 +9,8 @@
 #import "UIRoutes.h"
 #import "UIRoutesSegueProtocol.h"
 
+const NSString *UIStoryAnyPattern = @"__any__";
+
 @interface UIStory () <NSCopying>
 @property (nonatomic, copy) UIViewController *(^handler)(NSURL *url, NSDictionary *params);
 
@@ -28,7 +30,7 @@ static UIWindow *_routingWindow;
 
 @implementation UIRoutes
 {
-    NSMutableArray *_stories;
+    NSMutableDictionary *_stories;
     UIStory *_unresolvedStory;
 }
 
@@ -77,7 +79,7 @@ static UIWindow *_routingWindow;
 {
     self = [super init];
     if (self) {
-        _stories = [NSMutableArray new];
+        _stories = [NSMutableDictionary new];
     }
     return self;
 }
@@ -87,7 +89,29 @@ static UIWindow *_routingWindow;
     if (story.handler == nil && handler) {
         story.handler = handler;
     }
-    [_stories addObject:story];
+    NSArray *patternComponents = [story.pattern componentsSeparatedByString:@"/"];
+    NSMutableDictionary *parent = [_stories objectForKey:@(patternComponents.count)];
+    if (parent == nil) {
+        parent = [NSMutableDictionary new];
+        [_stories setObject:parent forKey:@(patternComponents.count)];
+    }
+    for (id obj in patternComponents) {
+        const NSString *pattern = obj;
+        if ([pattern hasPrefix:@":"]) {
+            pattern = UIStoryAnyPattern;
+        }
+        NSParameterAssert([parent isKindOfClass:[NSDictionary class]]);
+        NSMutableDictionary *tree = [parent objectForKey:pattern];
+
+        if (obj == patternComponents.lastObject) {
+            [parent setObject:story forKey:pattern];
+        } else if (tree == nil) {
+            tree = [NSMutableDictionary new];
+            [parent setObject:tree forKey:pattern];
+        }
+
+        parent = tree;
+    }
 }
 
 - (void)unresolved:(UIStory *)story handler:(UIViewController *(^)(NSURL *))handler
@@ -243,11 +267,9 @@ static UIWindow *_routingWindow;
 
 - (BOOL)canOpenURL:(NSURL *)url
 {
-    for (UIStory *story in _stories) {
-        NSDictionary *params = [story parameterForURL:url];
-        if (params) {
-            return YES;
-        }
+    UIStory *story = [self storyForURL:url];
+    if (story) {
+        return YES;
     }
     return NO;
 }
@@ -264,12 +286,11 @@ static UIWindow *_routingWindow;
 
 - (void)openURL:(NSURL *)url wake:(void (^)(UIStoryboardSegue *))wake completion:(void (^)())completion
 {
-    for (UIStory *story in _stories) {
-        NSDictionary *params = [story parameterForURL:url];
-        if (params) {
-            [self performSegueWithStory:story url:url parameter:params wake:wake completion:completion];
-            return;
-        }
+    UIStory *story = [self storyForURL:url];
+    NSDictionary *params = [story parameterForURL:url];
+    if (params) {
+        [self performSegueWithStory:story url:url parameter:params wake:wake completion:completion];
+        return;
     }
     if (_unresolvedStory) {
         [self performSegueWithStory:_unresolvedStory url:url parameter:nil wake:wake completion:completion];
@@ -290,11 +311,41 @@ static UIWindow *_routingWindow;
         stack.url = url;
         stack.presentedViewController = destination;
         stack.presentingViewController = source;
-        [segue performWithCompletion:completion];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [segue performWithCompletion:completion];
+        });
         [[[self class] stacks] addObject:stack];
         return YES;
     }
     return NO;
+}
+
+- (UIStory *)storyForURL:(NSURL *)url
+{
+    NSArray *patternComponents = [[url.host stringByAppendingPathComponent:url.path] componentsSeparatedByString:@"/"];
+    NSDictionary *parent = [_stories objectForKey:@(patternComponents.count)];
+    if (parent == nil) {
+        return nil;
+    }
+
+    for (NSString *pattern in patternComponents) {
+        NSParameterAssert([parent isKindOfClass:[NSDictionary class]]);
+        id tree = [parent objectForKey:pattern];
+        if (tree == nil) {
+            tree = [parent objectForKey:UIStoryAnyPattern];
+            if (tree == nil) {
+                return tree;
+            }
+        }
+        if (pattern == patternComponents.lastObject) {
+            return tree;
+        } else if ([tree isKindOfClass:[UIStory class]]) {
+            return nil;
+        }
+
+        parent = tree;
+    }
+    return nil;
 }
 
 @end
