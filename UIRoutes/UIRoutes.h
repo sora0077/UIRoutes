@@ -34,6 +34,7 @@
 + (void)clearAniamted:(BOOL)animated;
 + (void)clearAniamted:(BOOL)animated dismiss:(void (^)(UIViewController *viewController))dismiss;
 
+- (void)setResolveURLHandler:(BOOL (^)(NSURL *))handler;
 - (void)addStory:(UIStory *)story handler:(UIViewController *(^)(NSURL *url, NSDictionary *params))handler;
 - (void)unresolved:(UIStory *)story handler:(UIViewController *(^)(NSURL *url))handler;
 @end

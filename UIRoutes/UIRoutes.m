@@ -32,6 +32,8 @@ static UIWindow *_routingWindow;
 {
     NSMutableDictionary *_stories;
     UIStory *_unresolvedStory;
+
+    BOOL (^_resolveURLHandler)(NSURL *url);
 }
 
 + (NSMutableArray *)stacks
@@ -82,6 +84,11 @@ static UIWindow *_routingWindow;
         _stories = [NSMutableDictionary new];
     }
     return self;
+}
+
+- (void)setResolveURLHandler:(BOOL (^)(NSURL *))handler
+{
+    _resolveURLHandler = [handler copy];
 }
 
 - (void)addStory:(UIStory *)story handler:(UIViewController *(^)(NSURL *, NSDictionary *))handler
@@ -169,6 +176,11 @@ static UIWindow *_routingWindow;
 + (void)openURL:(NSURL *)url wake:(void (^)(UIStoryboardSegue<UIRoutesSegueProtocol> *))wake completion:(void (^)())completion
 {
     UIRoutes *route = [[self class] routes][url.scheme];
+
+    if (route->_resolveURLHandler) {
+        BOOL ret = route->_resolveURLHandler(url);
+        if (ret == NO) return;
+    }
     [route openURL:url wake:wake completion:completion];
 }
 
@@ -197,8 +209,9 @@ static UIWindow *_routingWindow;
         if (wake) {
             wake(unwind);
         }
-
-        [unwind performWithCompletion:completion];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [unwind performWithCompletion:completion];
+        });
 
         [[self stacks] removeObject:story];
     }
